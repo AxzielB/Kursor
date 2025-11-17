@@ -85,8 +85,13 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
       }
 
       handleClose();
-    } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+    } catch (err: unknown) { // FIX: Changed 'any' to 'unknown'
+      // Safely extract error message
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred during login.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -218,25 +223,23 @@ export default function LoginModal({ onClose }: { onClose: () => void }) {
             </button>
           </form>
 
-         <div className="mt-6 text-center text-sm">
-          <p className="text-gray-600">
-            Don't have an account?{" "}
-            <span
-              className="font-semibold hover:underline cursor-pointer"
-              style={{ color: "#FFDE59" }}
-              onClick={() => {
-                handleClose();           // Close login modal
-                // Open signup modal by calling parent's setter
-                const event = new CustomEvent("openSignup");
-                window.dispatchEvent(event);
-              }}
-            >
-              Sign up
-            </span>
-          </p>
-        </div>
-
-
+          <div className="mt-6 text-center text-sm">
+            <p className="text-gray-600">
+              Don't have an account?{" "}
+              <span
+                className="font-semibold hover:underline cursor-pointer"
+                style={{ color: "#FFDE59" }}
+                onClick={() => {
+                  handleClose(); // Close login modal
+                  // Open signup modal by calling parent's setter
+                  const event = new CustomEvent("openSignup");
+                  window.dispatchEvent(event);
+                }}
+              >
+                Sign up
+              </span>
+            </p>
+          </div>
         </div>
       )}
     </div>

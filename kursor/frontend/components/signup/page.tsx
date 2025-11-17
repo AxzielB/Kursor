@@ -83,8 +83,13 @@ export default function SignupModal({
       setMessage(
         "Check your email inbox for a confirmation link to activate your account."
       );
-    } catch (err: any) {
-      setError(err.message || "Something went wrong.");
+    } catch (err: unknown) { // FIX: Changed 'any' to 'unknown'
+      // Safely extract error message
+      const errorMessage =
+        err instanceof Error
+          ? err.message
+          : "An unknown error occurred during signup.";
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -242,25 +247,23 @@ export default function SignupModal({
           </div>
 
           {/* Login Link */}
-         <div className="mt-6 text-center">
-          <p className="text-gray-600 text-sm">
-            Already have an account?{" "}
-            <span
-              className="font-semibold hover:underline cursor-pointer"
-              style={{ color: "#FFDE59" }}
-              onClick={() => {
-                handleClose();           // Close signup modal
-                // Open login modal by calling parent's setter
-                const event = new CustomEvent("openLogin");
-                window.dispatchEvent(event);
-              }}
-            >
-              Log in
-            </span>
-          </p>
-        </div>
-
-
+          <div className="mt-6 text-center">
+            <p className="text-gray-600 text-sm">
+              Already have an account?{" "}
+              <span
+                className="font-semibold hover:underline cursor-pointer"
+                style={{ color: "#FFDE59" }}
+                onClick={() => {
+                  handleClose(); // Close signup modal
+                  // Open login modal by calling parent's setter
+                  const event = new CustomEvent("openLogin");
+                  window.dispatchEvent(event);
+                }}
+              >
+                Log in
+              </span>
+            </p>
+          </div>
         </div>
       )}
     </div>
